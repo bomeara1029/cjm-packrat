@@ -29,7 +29,7 @@
   "typings": "build/index.d.ts",
   "scripts": {
     "start": "yarn build:dev && concurrently 'yarn build:watch' 'yarn server:start'",
-    "server:start": "nodemon -e '*.ts' --watch build 'node build/index.js'",
+    "server:start": "nodemon --ignore * -e '*.ts' --watch build 'node build/index.js'",
     "build:dev": "tsc --build",
     "build:prod": "tsc --build",
     "build:watch": "tsc --watch",
