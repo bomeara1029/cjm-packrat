@@ -475,7 +475,7 @@ class WebDAVFileSystem extends webdav.FileSystem {
             LOG.info(`WebDAVFileSystem._openWriteStream(${pathS}), FileName ${FileName}, FilePath ${FilePath}, asset type ${COMMON.eVocabularyID[eVocab]}, SOBased ${JSON.stringify(SOBased, H.Helpers.saferStringify)}`, LOG.LS.eHTTP);
 
             const LS: LocalStore = await ASL.getOrCreateStore();
-            const idUserCreator: number = LS?.idUser ?? 0;
+            const idUserCreator: number = LS?.idUser ?? 1;
             const BS: BufferStream = new BufferStream();
             // BS.on('resume', async () => { LOG.info(`WebDAVFileSystem._openWriteStream: (W) onResume for ${asset ? JSON.stringify(asset, H.Helpers.saferStringify) : 'new asset'}`, LOG.LS.eHTTP); });
             // BS.on('pause', async () => { LOG.info(`WebDAVFileSystem._openWriteStream: (W) onPause for ${asset ? JSON.stringify(asset, H.Helpers.saferStringify) : 'new asset'}`, LOG.LS.eHTTP); });

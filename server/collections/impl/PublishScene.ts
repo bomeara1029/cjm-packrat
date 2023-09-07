@@ -5,7 +5,7 @@ import * as COL from '../../collections/interface/';
 import * as META from '../../metadata';
 import * as LOG from '../../utils/logger';
 import * as H from '../../utils/helpers';
-import * as ZIP from '../../utils/zipStream';
+// import * as ZIP from '../../utils/zipStream';
 import * as STORE from '../../storage/interface';
 import * as WF from '../../workflow/interface';
 import { SvxReader } from '../../utils/parser';
@@ -422,8 +422,24 @@ export class PublishScene {
             return false;
         let stageRes: H.IOResults = { success: true };
 
+        stageRes = await H.Helpers.fileOrDirExists(Config.collection.edan.stagingRoot);
+        if (!stageRes.success)
+            stageRes = await H.Helpers.createDirectory(Config.collection.edan.stagingRoot);
+        if (!stageRes.success) {
+            LOG.error(`PublishScene.stageSceneFiles unable to ensure existence of staging directory ${Config.collection.edan.stagingRoot}: ${stageRes.error}`, LOG.LS.eCOLL);
+            return false;
+        }
+
+        stageRes = await H.Helpers.fileOrDirExists(path.join(Config.collection.edan.stagingRoot, this.scene.EdanUUID!));
+        if (!stageRes.success)
+            stageRes = await H.Helpers.createDirectory(path.join(Config.collection.edan.stagingRoot, this.scene.EdanUUID!));
+        if (!stageRes.success) {
+            LOG.error(`PublishScene.stageSceneFiles unable to ensure existence of staging directory ${path.join(Config.collection.edan.stagingRoot, this.scene.EdanUUID!)}: ${stageRes.error}`, LOG.LS.eCOLL);
+            return false;
+        }
+
         // second pass: zip up appropriate assets; prepare to copy downloads
-        const zip: ZIP.ZipStream = new ZIP.ZipStream();
+        // const zip: ZIP.ZipStream = new ZIP.ZipStream();
         for (const SAC of this.SacList.values()) {
             if (SAC.model || SAC.metadataSet) // skip downloads
                 continue;
@@ -440,39 +456,42 @@ export class PublishScene {
                 rebasedPath = rebasedPath.substring(1);
 
             const fileNameAndPath: string = path.posix.join(rebasedPath, SAC.assetVersion.FileName);
-            LOG.info(`PublishScene.stageSceneFiles adding ${fileNameAndPath} to zip`, LOG.LS.eCOLL);
-            const res: H.IOResults = await zip.add(fileNameAndPath, RSR.readStream);
-            if (!res.success) {
-                LOG.error(`PublishScene.stageSceneFiles failed to add asset version ${SAC.assetVersion.idAssetVersion} to zip: ${res.error}`, LOG.LS.eCOLL);
+        
+        // Staging files directly in favor of staging one zip file as we are saving directly to the API's production S3
+        // This is opposed to monitoring an NFS hotfolder with the zip files and unpacking and saving them in a version of edan api which would then upload the individual files to some storage solution
+
+            // LOG.info(`PublishScene.stageSceneFiles adding ${fileNameAndPath} to zip`, LOG.LS.eCOLL);
+            // const res: H.IOResults = await zip.add(fileNameAndPath, RSR.readStream);
+            // if (!res.success) {
+            //     LOG.error(`PublishScene.stageSceneFiles failed to add asset version ${SAC.assetVersion.idAssetVersion} to zip: ${res.error}`, LOG.LS.eCOLL);
+            //     return false;
+            // }
+            
+            stageRes = await H.Helpers.writeStreamToFile(RSR.readStream, path.join(Config.collection.edan.stagingRoot, this.scene.EdanUUID!, fileNameAndPath));
+            if (!stageRes.success) {
+                LOG.error(`PublishScene.stageSceneFiles unable to stage asset ${fileNameAndPath}: ${stageRes.error}`, LOG.LS.eCOLL);
                 return false;
             }
+            LOG.info(`PublishScene.stageSceneFiles staged asset ${fileNameAndPath}`, LOG.LS.eCOLL);
         }
 
-        const zipStream: NodeJS.ReadableStream | null = await zip.streamContent(null);
-        if (!zipStream) {
-            LOG.error('PublishScene.stageSceneFiles failed to extract stream from zip', LOG.LS.eCOLL);
-            return false;
-        }
-
-        stageRes = await H.Helpers.fileOrDirExists(Config.collection.edan.stagingRoot);
-        if (!stageRes.success)
-            stageRes = await H.Helpers.createDirectory(Config.collection.edan.stagingRoot);
-        if (!stageRes.success) {
-            LOG.error(`PublishScene.stageSceneFiles unable to ensure existence of staging directory ${Config.collection.edan.stagingRoot}: ${stageRes.error}`, LOG.LS.eCOLL);
-            return false;
-        }
+        // const zipStream: NodeJS.ReadableStream | null = await zip.streamContent(null);
+        // if (!zipStream) {
+        //     LOG.error('PublishScene.stageSceneFiles failed to extract stream from zip', LOG.LS.eCOLL);
+        //     return false;
+        // }
 
         const noFinalSlash: boolean = !Config.collection.edan.upsertContentRoot.endsWith('/');
-        this.sharedName = Config.collection.edan.upsertContentRoot + (noFinalSlash ? '/' : '') + this.scene.EdanUUID! + '.zip'; // eslint-disable-line @typescript-eslint/no-non-null-assertion
-        const stagedName: string = path.join(Config.collection.edan.stagingRoot, this.scene.EdanUUID!) + '.zip'; // eslint-disable-line @typescript-eslint/no-non-null-assertion
+        this.sharedName = Config.collection.edan.upsertContentRoot + (noFinalSlash ? '/' : '') + this.scene.EdanUUID!;// + '.zip'; // eslint-disable-line @typescript-eslint/no-non-null-assertion
+        const stagedName: string = path.join(Config.collection.edan.stagingRoot, this.scene.EdanUUID!);// + '.zip'; // eslint-disable-line @typescript-eslint/no-non-null-assertion
         LOG.info(`PublishScene.stageSceneFiles staging file ${stagedName}, referenced in publish as ${this.sharedName}`, LOG.LS.eCOLL);
 
-        stageRes = await H.Helpers.writeStreamToFile(zipStream, stagedName);
-        if (!stageRes.success) {
-            LOG.error(`PublishScene.stageSceneFiles unable to stage file ${stagedName}: ${stageRes.error}`, LOG.LS.eCOLL);
-            return false;
-        }
-        LOG.info(`PublishScene.stageSceneFiles staged file ${stagedName}`, LOG.LS.eCOLL);
+        // stageRes = await H.Helpers.writeStreamToFile(zipStream, stagedName);
+        // if (!stageRes.success) {
+        //     LOG.error(`PublishScene.stageSceneFiles unable to stage file ${stagedName}: ${stageRes.error}`, LOG.LS.eCOLL);
+        //     return false;
+        // }
+        // LOG.info(`PublishScene.stageSceneFiles staged file ${stagedName}`, LOG.LS.eCOLL);
         return true;
     }
 
@@ -706,7 +725,7 @@ export class PublishScene {
         const name: string = subjectName + ((sceneName && sceneName != 'Scene') ? `: ${sceneName}` : '');   // Full title of edanmdm record, plus a possible scene title
         const title: string = `${name} (${category} ${type}, ${MODEL_FILE_TYPE}, scale in ${UNITS})`;       // name, below, plus ($$category$$ $$type$$, $$attributes.MODEL_FILE_TYPE$$, scale in $$attributes.UNITS$$)
 
-        const url: string = `https://3d-api.si.edu/content/document/3d_package:${uuid}/resources/${SAC.assetVersion.FileName}`;
+        const url: string = `${Config.collection.edan.api3d}content/document/3d_package:${uuid}/resources/${SAC.assetVersion.FileName}`;
         const filename: string = SAC.assetVersion.FileName;
         const attributes: COL.Edan3DResourceAttribute[] = [{ UNITS, MODEL_FILE_TYPE, FILE_TYPE, GLTF_STANDARDIZED, DRACO_COMPRESSED }];
         return { filename, url, type, title, name, attributes, category };
