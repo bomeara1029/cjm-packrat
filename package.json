@@ -1,18 +1,22 @@
 {
-  "name": "dpo-packrat",
-  "version": "0.9.12",
+  "name": "cjm-packrat",
+  "version": "0.1.1",
   "private": true,
   "license": "Apache-2.0",
   "description": "Data Repository and Workflow Management for 3D data captures, models, and scenes",
-  "homepage": "https://github.com/Smithsonian/dpo-packrat#readme",
+  "homepage": "https://github.com/bomeara1029/cjm-packrat#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Smithsonian/dpo-packrat.git"
+    "url": "git+https://github.com/bomeara1029/cjm-packrat.git"
   },
   "bugs": {
-    "url": "https://github.com/Smithsonian/dpo-packrat/issues"
+    "url": "https://github.com/bomeara1029/cjm-packrat/issues"
   },
   "contributors": [
+    {
+      "name": "Ben O'Meara",
+      "url": "https://github.com/bomeara1029"
+    },
     {
       "name": "Jon Tyson",
       "url": "https://github.com/jahjedtieson"
