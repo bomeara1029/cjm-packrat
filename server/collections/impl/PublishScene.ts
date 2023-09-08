@@ -456,9 +456,9 @@ export class PublishScene {
                 rebasedPath = rebasedPath.substring(1);
 
             const fileNameAndPath: string = path.posix.join(rebasedPath, SAC.assetVersion.FileName);
-        
-        // Staging files directly in favor of staging one zip file as we are saving directly to the API's production S3
-        // This is opposed to monitoring an NFS hotfolder with the zip files and unpacking and saving them in a version of edan api which would then upload the individual files to some storage solution
+
+            // Staging files directly in favor of staging one zip file as we are saving directly to the API's production S3
+            // This is opposed to monitoring an NFS hotfolder with the zip files and unpacking and saving them in a version of edan api which would then upload the individual files to some storage solution
 
             // LOG.info(`PublishScene.stageSceneFiles adding ${fileNameAndPath} to zip`, LOG.LS.eCOLL);
             // const res: H.IOResults = await zip.add(fileNameAndPath, RSR.readStream);
@@ -466,7 +466,7 @@ export class PublishScene {
             //     LOG.error(`PublishScene.stageSceneFiles failed to add asset version ${SAC.assetVersion.idAssetVersion} to zip: ${res.error}`, LOG.LS.eCOLL);
             //     return false;
             // }
-            
+
             stageRes = await H.Helpers.writeStreamToFile(RSR.readStream, path.join(Config.collection.edan.stagingRoot, this.scene.EdanUUID!, fileNameAndPath));
             if (!stageRes.success) {
                 LOG.error(`PublishScene.stageSceneFiles unable to stage asset ${fileNameAndPath}: ${stageRes.error}`, LOG.LS.eCOLL);

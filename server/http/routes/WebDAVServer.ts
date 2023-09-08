@@ -91,7 +91,7 @@ class WebDAVAuthentication implements webdav.HTTPAuthentication {
         if (isAuthenticated(ctx.request)) {
             const LS: LocalStore | undefined = ASL.getStore();
             const idUser: number | undefined | null = LS?.idUser;
-            const user: DBAPI.User | undefined = 1 ? await CACHE.UserCache.getUser(1) : undefined;
+            const user: DBAPI.User | undefined = idUser ? await CACHE.UserCache.getUser(idUser) : undefined;
             console.log(LS, idUser, user, ctx.request['user'])
             if (user) {
                 // LOG.info(`WEBDAV ${ctx.request.url} authenticated for UserID ${user.idUser}`, LOG.LS.eHTTP);
@@ -475,7 +475,7 @@ class WebDAVFileSystem extends webdav.FileSystem {
             LOG.info(`WebDAVFileSystem._openWriteStream(${pathS}), FileName ${FileName}, FilePath ${FilePath}, asset type ${COMMON.eVocabularyID[eVocab]}, SOBased ${JSON.stringify(SOBased, H.Helpers.saferStringify)}`, LOG.LS.eHTTP);
 
             const LS: LocalStore = await ASL.getOrCreateStore();
-            const idUserCreator: number = LS?.idUser ?? 1;
+            const idUserCreator: number = LS?.idUser ?? 0;
             const BS: BufferStream = new BufferStream();
             // BS.on('resume', async () => { LOG.info(`WebDAVFileSystem._openWriteStream: (W) onResume for ${asset ? JSON.stringify(asset, H.Helpers.saferStringify) : 'new asset'}`, LOG.LS.eHTTP); });
             // BS.on('pause', async () => { LOG.info(`WebDAVFileSystem._openWriteStream: (W) onPause for ${asset ? JSON.stringify(asset, H.Helpers.saferStringify) : 'new asset'}`, LOG.LS.eHTTP); });

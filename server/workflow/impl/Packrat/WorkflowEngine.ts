@@ -614,7 +614,6 @@ export class WorkflowEngine implements WF.IWorkflowEngine {
         let assetVersionMTL: DBAPI.AssetVersion | undefined = undefined;
         if (modelConstellation.ModelMaterialChannels) {
             for (const MMC of modelConstellation.ModelMaterialChannels) {
-                console.log(MMC)
                 // Skip everything but diffuse channel
                 if (MMC.idVMaterialType != vDiffuse.idVocabulary)
                     continue;
@@ -628,7 +627,6 @@ export class WorkflowEngine implements WF.IWorkflowEngine {
                 else if (MMC.idModelMaterialUVMap) { // stored in map ... now find it!
                     if (modelConstellation.ModelMaterialUVMaps) {
                         for (const MMUV of modelConstellation.ModelMaterialUVMaps) {
-                            console.log(MMUV)
                             if (MMUV.idModelMaterialUVMap == MMC.idModelMaterialUVMap) {
                                 idAssetDiffuse = MMUV.idAsset;
                                 break;
@@ -673,9 +671,9 @@ export class WorkflowEngine implements WF.IWorkflowEngine {
             !assetVersionMTL &&                                 // we don't have a MTL file, and
             UVMapFileCount === 1)                               // we have only one UV Map
             assetVersionDiffuse = assetVersionDiffuseBackup;    // use our "backup" notion of diffuse texture
-console.log(assetVersionDiffuse, assetVersionMTL, UVMapFileCount, assetVersionDiffuseBackup)
+
         const units: string | undefined = await COOK.JobCookSIVoyagerScene.convertModelUnitsVocabToCookUnits(modelConstellation.Model.idVUnits);
-        const retValue = { exitEarly: false, idModel, idSystemObjectModel, assetVersionGeometry, assetVersionDiffuse:assetVersionDiffuseBackup, assetVersionMTL, units };
+        const retValue = { exitEarly: false, idModel, idSystemObjectModel, assetVersionGeometry, assetVersionDiffuse: assetVersionDiffuseBackup, assetVersionMTL, units };
         LOG.info(`WorkflowEngine.computeModelInfo returning ${JSON.stringify(retValue, H.Helpers.saferStringify)}`, LOG.LS.eWF);
         return retValue;
     }
