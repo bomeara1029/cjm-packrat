@@ -9,6 +9,23 @@ services:
             context: ../..
             dockerfile: ./conf/docker/proxy-prod.Dockerfile
             target: proxy
+        cap_add:
+            - NET_ADMIN
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=America/Chicago
+            - URL=cjmoyna.int
+            - SUBDOMAINS=packrat,
+            - VALIDATION=http
+            - CERTPROVIDER= #optional
+            - DNSPLUGIN=cloudflare #optional
+            # - DUCKDNSTOKEN=<token> #optional
+            # - EMAIL=<e-mail> #optional
+            # - ONLY_SUBDOMAINS=false #optional
+            # - EXTRA_DOMAINS=<extradomains> #optional
+            # - STAGING=false #optional
+            - ONLY_SUBDOMAINS=true
         ports:
             - $PACKRAT_PROXY_PORT:80
 
@@ -70,6 +87,32 @@ services:
             - SHARP_IGNORE_GLOBAL_LIBVIPS=1
             - npm_config_arch=x64
             - npm_config_platform=linux
+        depends_on:
+            - s3fs
+
+    s3fs:
+        container_name: packrat-s3fs
+        image: efrecon/s3fs:1.91
+        restart: unless-stopped
+        cap_add:
+            - SYS_ADMIN
+        security_opt:
+            - 'apparmor:unconfined'
+        devices:
+            - /dev/fuse
+        privileged: true
+        volumes:
+            - '/mnt/s3:/opt/s3fs/bucket:rshared'
+            - '${HOME}/.passwd-s3fs:/opt/s3fs/.passwd-s3fs'
+        environment:
+            AWS_S3_BUCKET: '3d-api'
+            AWS_S3_AUTHFILE: '/opt/s3fs/.passwd-s3fs'
+            AWS_S3_URL: 'https://nyc3.digitaloceanspaces.com/'
+            AWS_S3_MOUNT: '/opt/s3fs/bucket'
+            S3FS_ARGS: 'allow_other,use_path_request_style,nonempty,default_acl=public-read'
+            S3FS_DEBUG: 0
+            UID: '1000'
+            GID: '1000'
 
     db:
         container_name: packrat-db
