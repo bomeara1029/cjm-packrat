@@ -92,7 +92,6 @@ class WebDAVAuthentication implements webdav.HTTPAuthentication {
             const LS: LocalStore | undefined = ASL.getStore();
             const idUser: number | undefined | null = LS?.idUser;
             const user: DBAPI.User | undefined = idUser ? await CACHE.UserCache.getUser(idUser) : undefined;
-            console.log(LS, idUser, user, ctx.request['user'])
             if (user) {
                 // LOG.info(`WEBDAV ${ctx.request.url} authenticated for UserID ${user.idUser}`, LOG.LS.eHTTP);
                 // @ts-ignore: ts(2345)
