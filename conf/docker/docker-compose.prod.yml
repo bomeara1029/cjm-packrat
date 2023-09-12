@@ -70,32 +70,35 @@ services:
             - SHARP_IGNORE_GLOBAL_LIBVIPS=1
             - npm_config_arch=x64
             - npm_config_platform=linux
+        volumes:
+            - $S3FS_MOUNT_POINT:$PACKRAT_EDAN_STAGING_ROOT
         depends_on:
             - s3fs
 
     s3fs:
         container_name: packrat-s3fs
-        image: efrecon/s3fs:1.91
+        image: packrat-s3fs
         restart: unless-stopped
+        build:
+            context: ../..
+            dockerfile: ./conf/docker/s3fs.Dockerfile
+            target: s3fs
         cap_add:
             - SYS_ADMIN
-        security_opt:
-            - 'apparmor:unconfined'
         devices:
             - /dev/fuse
-        privileged: true
         volumes:
-            - '/mnt/s3:/opt/s3fs/bucket:rshared'
-            - '${HOME}/.passwd-s3fs:/opt/s3fs/.passwd-s3fs'
+            - '$S3FS_MOUNT_POINT:/opt/s3fs/bucket:rshared'
+            - '$S3FS_PASSWD_FILE:/opt/s3fs/.passwd-s3fs'
         environment:
-            AWS_S3_BUCKET: '3d-api'
-            AWS_S3_AUTHFILE: '/opt/s3fs/.passwd-s3fs'
-            AWS_S3_URL: 'https://nyc3.digitaloceanspaces.com/'
-            AWS_S3_MOUNT: '/opt/s3fs/bucket'
-            S3FS_ARGS: 'allow_other,use_path_request_style,nonempty,default_acl=public-read'
-            S3FS_DEBUG: 0
-            UID: '1000'
-            GID: '1000'
+            - AWS_S3_BUCKET=$AWS_S3_BUCKET
+            - AWS_S3_URL=$AWS_S3_URL
+            - AWS_S3_MOUNT=/opt/s3fs/bucket
+            - AWS_S3_AUTHFILE=/opt/s3fs/.passwd-s3fs
+            - S3FS_ARGS=$S3FS_ARGS
+            - S3FS_DEBUG=$S3FS_DEBUG
+            - UID=$S3FS_UID
+            - GID=$S3FS_GID
 
     db:
         container_name: packrat-db

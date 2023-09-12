@@ -89,7 +89,7 @@ services:
             - $PACKRAT_OCFL_STORAGE_ROOT:$PACKRAT_OCFL_STORAGE_ROOT
             - $PACKRAT_OCFL_STAGING_ROOT:$PACKRAT_OCFL_STAGING_ROOT
             - $PACKRAT_LOG_ROOT:$PACKRAT_LOG_ROOT
-            - $PACKRAT_EDAN_STAGING_ROOT:$PACKRAT_EDAN_STAGING_ROOT
+            - $S3FS_MOUNT_POINT:$PACKRAT_EDAN_STAGING_ROOT
             - $PACKRAT_EDAN_RESOURCES_HOTFOLDER:$PACKRAT_EDAN_RESOURCES_HOTFOLDER
             - /data/Packrat/digitization:/data/Packrat/digitization
 
@@ -133,7 +133,7 @@ services:
             - $PACKRAT_OCFL_STORAGE_ROOT:$PACKRAT_OCFL_STORAGE_ROOT
             - $PACKRAT_OCFL_STAGING_ROOT:$PACKRAT_OCFL_STAGING_ROOT
             - $PACKRAT_LOG_ROOT:$PACKRAT_LOG_ROOT
-            - $PACKRAT_EDAN_STAGING_ROOT:$PACKRAT_EDAN_STAGING_ROOT
+            - $S3FS_MOUNT_POINT:$PACKRAT_EDAN_STAGING_ROOT
             - $PACKRAT_EDAN_RESOURCES_HOTFOLDER:$PACKRAT_EDAN_RESOURCES_HOTFOLDER
             - /data/Packrat/digitization:/data/Packrat/digitization
 
@@ -185,7 +185,7 @@ services:
             - $PACKRAT_OCFL_STORAGE_ROOT:$PACKRAT_OCFL_STORAGE_ROOT
             - $PACKRAT_OCFL_STAGING_ROOT:$PACKRAT_OCFL_STAGING_ROOT
             - $PACKRAT_LOG_ROOT:$PACKRAT_LOG_ROOT
-            - $PACKRAT_EDAN_STAGING_ROOT:$PACKRAT_EDAN_STAGING_ROOT
+            - $S3FS_MOUNT_POINT:$PACKRAT_EDAN_STAGING_ROOT
             - $PACKRAT_EDAN_RESOURCES_HOTFOLDER:$PACKRAT_EDAN_RESOURCES_HOTFOLDER
             - /data/Packrat/digitization:/data/Packrat/digitization
 
@@ -249,6 +249,56 @@ services:
             - $PACKRAT_SOLR_PORT:8983
         environment:
             - PACKRAT_SOLR_HOST=packrat-solr-inspect
+
+    packrat-s3fs-dev:
+        container-name: packrat-s3fs-dev
+        image: "packrat-s3fs-dev:${IMAGE_TAG}"
+        restart: unless-stopped
+        build:
+            context: ../..
+            dockerfile: ./conf/docker/s3fs.Dockerfile
+            target: s3fs
+        cap_add:
+            - SYS_ADMIN
+        devices:
+            - /dev/fuse
+        volumes:
+            - '$S3FS_MOUNT_POINT:/opt/s3fs/bucket:rshared'
+            - '$S3FS_PASSWD_FILE:/opt/s3fs/.passwd-s3fs'
+        environment:
+            - AWS_S3_BUCKET=$AWS_S3_BUCKET
+            - AWS_S3_URL=$AWS_S3_URL
+            - AWS_S3_MOUNT=/opt/s3fs/bucket
+            - AWS_S3_AUTHFILE=/opt/s3fs/.passwd-s3fs
+            - S3FS_ARGS=$S3FS_ARGS
+            - S3FS_DEBUG=$S3FS_DEBUG
+            - UID=$S3FS_UID
+            - GID=$S3FS_GID
+
+    packrat-s3fs-prod:
+        container-name: packrat-s3fs-prod
+        image: "packrat-s3fs-prod:${IMAGE_TAG}"
+        restart: unless-stopped
+        build:
+            context: ../..
+            dockerfile: ./conf/docker/s3fs.Dockerfile
+            target: s3fs
+        cap_add:
+            - SYS_ADMIN
+        devices:
+            - /dev/fuse
+        volumes:
+            - '$S3FS_MOUNT_POINT:/opt/s3fs/bucket:rshared'
+            - '$S3FS_PASSWD_FILE:/opt/s3fs/.passwd-s3fs'
+        environment:
+            - AWS_S3_BUCKET=$AWS_S3_BUCKET
+            - AWS_S3_URL=$AWS_S3_URL
+            - AWS_S3_MOUNT=/opt/s3fs/bucket
+            - AWS_S3_AUTHFILE=/opt/s3fs/.passwd-s3fs
+            - S3FS_ARGS=$S3FS_ARGS
+            - S3FS_DEBUG=$S3FS_DEBUG
+            - UID=$S3FS_UID
+            - GID=$S3FS_GID
             
 networks:
     default:
