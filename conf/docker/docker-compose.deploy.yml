@@ -251,7 +251,7 @@ services:
             - PACKRAT_SOLR_HOST=packrat-solr-inspect
 
     packrat-s3fs-dev:
-        container-name: packrat-s3fs-dev
+        container_name: packrat-s3fs-dev
         image: "packrat-s3fs-dev:${IMAGE_TAG}"
         restart: unless-stopped
         build:
@@ -276,7 +276,7 @@ services:
             - GID=$S3FS_GID
 
     packrat-s3fs-prod:
-        container-name: packrat-s3fs-prod
+        container_name: packrat-s3fs-prod
         image: "packrat-s3fs-prod:${IMAGE_TAG}"
         restart: unless-stopped
         build:
