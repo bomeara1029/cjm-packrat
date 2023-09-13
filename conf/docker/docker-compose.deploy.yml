@@ -262,6 +262,8 @@ services:
             - SYS_ADMIN
         devices:
             - /dev/fuse
+        security-opt:
+            - apparmor:unconfined
         volumes:
             - '$S3FS_MOUNT_POINT:/opt/s3fs/bucket:rshared'
             - '$S3FS_PASSWD_FILE:/opt/s3fs/.passwd-s3fs'
@@ -287,6 +289,8 @@ services:
             - SYS_ADMIN
         devices:
             - /dev/fuse
+        security-opt:
+            - apparmor:unconfined
         volumes:
             - '$S3FS_MOUNT_POINT:/opt/s3fs/bucket:rshared'
             - '$S3FS_PASSWD_FILE:/opt/s3fs/.passwd-s3fs'
