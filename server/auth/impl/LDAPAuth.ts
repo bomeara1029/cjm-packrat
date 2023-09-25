@@ -67,7 +67,7 @@ class LDAPAuth implements IAuth {
             return { success: false, error: 'LDAPClient is null' };
         let ldapBind: string = this._ldapConfig.CN;
         if (ldapBind)
-            ldapBind += `,${this._ldapConfig.OU}`;
+            ldapBind += this._ldapConfig.OU.length > 3 ? `,${this._ldapConfig.OU}` : ``;
         if (ldapBind)
             ldapBind += `,${this._ldapConfig.DC}`;
         const client: LDAP.Client = this._client;

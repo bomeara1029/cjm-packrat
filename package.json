@@ -61,6 +61,7 @@
     "generate:server:prisma": "yarn workspace @dpo-packrat/server generate:prisma",
     "postinstall": "lerna run postinstall && yarn install:e2e",
     "install:e2e": "cd e2e && yarn install --frozen-lockfile && cd ..",
+    "ldap": "bash ./conf/scripts/ldap.sh",
     "lint": "yarn eslint --ext .js,.jsx,.ts,.tsx .",
     "lint:fix": "yarn prettier --write . && yarn lint --fix",
     "test": "yarn workspaces run test",
