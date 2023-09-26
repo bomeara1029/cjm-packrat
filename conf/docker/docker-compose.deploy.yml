@@ -21,6 +21,8 @@ services:
             context: ../..
             dockerfile: ./conf/docker/client-dev.Dockerfile
             target: client
+        ports:
+            - $PACKRAT_CLIENT_PORT:3000
         environment:
             - NODE_ENV=$NODE_ENV
             - REACT_APP_PACKRAT_SERVER_ENDPOINT=$REACT_APP_PACKRAT_SERVER_ENDPOINT
@@ -33,6 +35,8 @@ services:
             context: ../..
             dockerfile: ./conf/docker/client-prod.Dockerfile
             target: client
+      ports:
+          - $PACKRAT_CLIENT_PORT:3000
       environment:
           - NODE_ENV=$NODE_ENV
           - REACT_APP_PACKRAT_SERVER_ENDPOINT=$REACT_APP_PACKRAT_SERVER_ENDPOINT
@@ -59,6 +63,8 @@ services:
             context: ../..
             dockerfile: ./conf/docker/server-dev.Dockerfile
             target: server
+        ports:
+            - $PACKRAT_SERVER_PORT:4000
         environment:
             - NODE_ENV=$NODE_ENV
             - REACT_APP_PACKRAT_SERVER_ENDPOINT=$REACT_APP_PACKRAT_SERVER_ENDPOINT
@@ -107,6 +113,8 @@ services:
             context: ../..
             dockerfile: ./conf/docker/server-prod.Dockerfile
             target: server
+        ports:
+            - $PACKRAT_SERVER_PORT:4000
         environment:
             - NODE_ENV=$NODE_ENV
             - REACT_APP_PACKRAT_SERVER_ENDPOINT=$REACT_APP_PACKRAT_SERVER_ENDPOINT
@@ -197,6 +205,8 @@ services:
         container_name: packrat-db-dev
         image: mariadb:10.5
         restart: always
+        ports:
+            - $PACKRAT_DB_PORT:3306
         environment:
             - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
         volumes:
@@ -206,6 +216,8 @@ services:
         container_name: packrat-db-prod
         image: mariadb:10.5
         restart: always
+        ports:
+            - $PACKRAT_DB_PORT:3306
         environment:
             - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
         volumes:
@@ -219,6 +231,8 @@ services:
             context: ../..
             dockerfile: ./conf/docker/solr.Dockerfile
             target: solr
+        ports:
+            - $PACKRAT_SOLR_PORT:8983
         environment:
             - PACKRAT_SOLR_HOST=packrat-solr-dev
             
@@ -230,6 +244,8 @@ services:
             context: ../..
             dockerfile: ./conf/docker/solr.Dockerfile
             target: solr
+        ports:
+            - $PACKRAT_SOLR_PORT:8983
         environment:
             - PACKRAT_SOLR_HOST=packrat-solr-prod
 
