@@ -73,6 +73,10 @@ typings/
 .env.test
 .env.*
 
+# nginx certs
+*.cert
+*.key
+
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 
