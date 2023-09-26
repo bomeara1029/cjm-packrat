@@ -62,7 +62,7 @@
     "postinstall": "lerna run postinstall && yarn install:e2e",
     "install:e2e": "cd e2e && yarn install --frozen-lockfile && cd ..",
     "ldap": "bash ./conf/scripts/ldap.sh",
-    "proxy:docker": "docker compose --env-file .env.prod -f ./conf/docker/docker-compose.prod.yml up --build -d packrat-proxy",
+    "proxy": "docker compose --env-file .env.prod -f ./conf/docker/docker-compose.prod.yml up --build -d packrat-proxy",
     "lint": "yarn eslint --ext .js,.jsx,.ts,.tsx .",
     "lint:fix": "yarn prettier --write . && yarn lint --fix",
     "test": "yarn workspaces run test",
