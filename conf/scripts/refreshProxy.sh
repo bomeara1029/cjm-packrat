@@ -1,6 +1,12 @@
+# Updates the global nginx.conf on the server
+sudo cp -v ./conf/nginx/nginx-prod.conf /etc/nginx/nginx.conf
+
 echo "Restarting nginx service"
 # Restart nginx service
-docker compose --env-file .env.prod -f ./conf/docker/docker-compose.prod.yml up --build -d packrat-proxy
+sudo service nginx restart
 
 # Check if status is active
-docker container ls | grep s3fs
+sudo service nginx status --no-pager
+
+# Use the command below to stop if you're getting nginx: [emerg] bind() to 0.0.0.0:80 failed
+# sudo fuser -k 80/tcp
