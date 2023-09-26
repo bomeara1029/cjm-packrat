@@ -9,6 +9,28 @@ location /server {
     proxy_send_timeout 3600;
 }
 
+location /solr {
+    rewrite /solr/(.*) /$1 break;
+    proxy_pass http://solr-prod;
+    proxy_set_header Host $host//solr;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    proxy_read_timeout 3600;
+    proxy_connect_timeout 3600;
+    proxy_send_timeout 3600;
+}
+
+location /ldap {
+    rewrite /ldap/(.*) /$1 break;
+    proxy_pass http://ldap;
+    proxy_set_header Host $host//ldap;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    proxy_read_timeout 3600;
+    proxy_connect_timeout 3600;
+    proxy_send_timeout 3600;
+}
+
 location / {
     proxy_pass http://client-prod;
     proxy_set_header X-Forwarded-For $remote_addr;
