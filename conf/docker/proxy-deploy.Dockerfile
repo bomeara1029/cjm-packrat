@@ -1,7 +1,7 @@
 FROM nginx:1.17.10 as proxy
 EXPOSE 80
 RUN rm /usr/share/nginx/html/*
-COPY ./conf/nginx/nginx-prod.conf /etc/nginx/nginx.conf
+COPY ./conf/nginx/nginx-deploy.conf /etc/nginx/nginx.conf
 COPY ./conf/nginx/conf.d/common-locations-prod /etc/nginx/conf.d/common-locations-prod
 COPY ./conf/nginx/conf.d/common-locations-dev /etc/nginx/conf.d/common-locations-dev
 COPY ./conf/nginx/certs/packrat.cjmoyna.int.cert /etc/pki/tls/certs/packrat.cjmoyna.int.cert
