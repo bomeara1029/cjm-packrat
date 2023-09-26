@@ -1,6 +1,18 @@
 version: "3.4"
 
 services:
+    packrat-proxy:
+        container_name: packrat-proxy
+        image: packrat-proxy
+        restart: always
+        build:
+            context: ../..
+            dockerfile: ./conf/docker/proxy-deploy.Dockerfile
+            target: proxy
+        ports:
+            - 80:80
+            - 443:443
+
     packrat-client-dev:
         container_name: packrat-client-dev
         image: "packrat-client-dev:${IMAGE_TAG}"
