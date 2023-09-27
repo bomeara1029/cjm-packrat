@@ -1,4 +1,4 @@
-# dpo-packrat
+# cjm-packrat
 Data Repository and Workflow Management for 3D data captures, models, and scenes
 
 ## Setup instructions (Development):
@@ -111,18 +111,18 @@ chmod 777 ./conf/scripts/devbox/*.sh
 ```
 
 # Deployment instructions:
-*Note: Make sure before you execute any script, you're root of the repository `dpo-packrat` and if you get permission denied for any script, make sure to do `chmod 777 path/to/script`. If you encounter any error then make sure to checkout Packrat server setup instruction on confluence*
+*Note: Make sure before you execute any script, you're root of the repository `dpo-packrat` and if you get permission denied for any script, make sure to do `chmod 777 path/to/script`.
 
 ## Docker images:
 *Note: current supported environments are `dev` and `prod`*
 
-1. Login into SI server
+1. Login into the server
 
 2. Pull the latest changes
 ```
 git pull
 ```
-*Note: repository is already cloned in `/home/<user>/dpo-packrat`*
+*Note: repository is already cloned in `/home/<user>/cjm-packrat`*
 
 3. Switch to the branch you want to deploy. To deploy for `dev` environment you should be on `develop` branch, for `prod` environment
 ```
@@ -143,6 +143,8 @@ If you get `Error while loading shared libraries: libz.so.1` for `docker-compose
 sudo mount /tmp -o remount,exec
 ```
 
-5. Wait for the images to be build/updated, then use `./conf/scripts/cleanup.sh` script to cleanup any residual docker images are left (optional)
+5. Wait for the images to be built/updated, then use `./conf/scripts/cleanup.sh` script to cleanup any residual docker images are left (optional)
 
-6. Make sure nginx is active using `sudo service nginx status --no-pager`
+6. Make sure nginx is active using `sudo service nginx status --no-pager` or `docker ps` if it is dockerized. Run `./conf/scripts/refreshProxy.sh` or `yarn proxy` respectively if it needs to be restarted
+
+7. If using the provided ldap server for authentication, make sure it is running with `docker ps` (or by visiting the `/ldap` subdirectory of your site) and restart it with `yarn ldap` if necessary
