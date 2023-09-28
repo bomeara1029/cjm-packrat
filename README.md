@@ -83,7 +83,7 @@ yarn start:client
 yarn start:server
 ``` 
 
-11. Setting up Packrat without Docker gives users the flexbility to install and configure their own database and Solr caching as needed.
+11. Setting up Packrat without Docker gives users the flexibility to install and configure their own database and Solr caching as needed.
 
 
 **Congratulations, Packrat is now ready for use!**

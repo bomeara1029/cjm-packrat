@@ -257,7 +257,7 @@ services:
     packrat-s3fs-dev:
         container_name: packrat-s3fs-dev
         image: "packrat-s3fs-dev:${IMAGE_TAG}"
-        restart: unless-stopped
+        restart: always
         build:
             context: ../..
             dockerfile: ./conf/docker/s3fs.Dockerfile
@@ -284,7 +284,7 @@ services:
     packrat-s3fs-prod:
         container_name: packrat-s3fs-prod
         image: "packrat-s3fs-prod:${IMAGE_TAG}"
-        restart: unless-stopped
+        restart: always
         build:
             context: ../..
             dockerfile: ./conf/docker/s3fs.Dockerfile
