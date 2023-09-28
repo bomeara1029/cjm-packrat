@@ -205,6 +205,8 @@ services:
         restart: always
         environment:
             - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
+        ports:
+            - $PACKRAT_DB_PORT:3306
         volumes:
             - ../../server/db/sql:/app/
 
@@ -214,6 +216,8 @@ services:
         restart: always
         environment:
             - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
+        ports:
+            - $PACKRAT_DB_PORT:3306
         volumes:
             - ../../server/db/sql:/app/
 
