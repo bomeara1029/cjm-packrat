@@ -165,4 +165,4 @@ To add a new user
  - Click "Create new entry here" under the unit
  - Choose "Default", then "inetOrgPerson"
  - Select "Email (mail)" as the RDN attribute
- - Fill out cn (common name), sn (surname), Password and Email of the user, then click "Create Object" at the bottom
+ - Fill out cn (common name), sn (surname), User Name, Password and Email of the user, then click "Create Object" at the bottom
