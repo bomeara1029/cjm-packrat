@@ -15,7 +15,7 @@ curl https://get.volta.sh | bash
 volta install node
 volta install yarn
 ```
-When switching to the `dpo-packrat` repo, the node version will automatically be pinned to the correct version by volta.
+When switching to the `cjm-packrat` repo, the node version will automatically be pinned to the correct version by volta.
 
 #### Steps:
 1. Install the dependencies *(at the root level)*. [Lerna](https://lerna.js.org/) will ensure the subdirectories’ packages are also installed.
@@ -111,7 +111,7 @@ chmod 777 ./conf/scripts/devbox/*.sh
 ```
 
 # Deployment instructions:
-*Note: Make sure before you execute any script, you're root of the repository `dpo-packrat` and if you get permission denied for any script, make sure to do `chmod 777 path/to/script`.
+*Note: Make sure before you execute any script, you're root of the repository `cjm-packrat` and if you get permission denied for any script, make sure to do `chmod 777 path/to/script`.
 
 ## Docker images:
 *Note: current supported environments are `dev` and `prod`*
@@ -148,3 +148,21 @@ sudo mount /tmp -o remount,exec
 6. Make sure nginx is active using `sudo service nginx status --no-pager` or `docker ps` if it is dockerized. Run `./conf/scripts/refreshProxy.sh` or `yarn proxy` respectively if it needs to be restarted
 
 7. If using the provided ldap server for authentication, make sure it is running with `docker ps` (or by visiting the `/ldap` subdirectory of your site) and restart it with `yarn ldap` if necessary
+
+## LDAP
+
+This repo comes with an LDAP server container that can be deployed for use as the main authentication method to log into Packrat. 
+
+It is reachable at the `/ldap` route of the site and needs to be logged in with the credentials provided in the `.env` file used in creating the container.
+
+Once logged in, if you are initializing the service, 
+
+ - Expand the dropdown to the left and click "Create new entry here"
+ - Choose "Generic: Organisational Unit" and give it a name
+ - The organizational unit should appear in the tree to the left
+
+To add a new user
+ - Click "Create new entry here" under the unit
+ - Choose "Default", then "inetOrgPerson"
+ - Select "Email (mail)" as the RDN attribute
+ - Fill out cn (common name), sn (surname), Password and Email of the user, then click "Create Object" at the bottom

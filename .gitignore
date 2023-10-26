@@ -72,6 +72,8 @@ typings/
 .env
 .env.test
 .env.*
+!.env.template
+!.env.guide
 
 # nginx certs
 *.cert
